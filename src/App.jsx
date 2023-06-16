@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import Todo from './components/Todo';
 import TodoForm from './components/TodoForm';
@@ -8,28 +8,10 @@ import Filter from './components/Filter';
 import './App.css';
 
 function App() {
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      text: "Estudar para prova",
-      category: "Estudo",
-      isCompleted: false,
-    },
-
-    {
-      id: 2,
-      text: "Ir para a academia",
-      category: "Pessoal",
-      isCompleted: false,
-    },
-
-    {
-      id: 3,
-      text: "Preparar aula",
-      category: "Trabalho",
-      isCompleted: false,
-    },
-  ])
+  const storedTodos = localStorage.getItem('todos');
+  const initialTodos = storedTodos ? JSON.parse(storedTodos) : [];
+  const [todos, setTodos] = useState(initialTodos);
+  
 
   const [search, setSearch] = useState("")
   
@@ -60,6 +42,17 @@ function App() {
     newTodos.map((todo) => todo.id === id ? todo.isCompleted = !todo.isCompleted : todo)
     setTodos(newTodos)
   }
+
+  useEffect(() => {
+    const storedTodos = localStorage.getItem('todos');
+    if (storedTodos) {
+      setTodos(JSON.parse(storedTodos));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
 
   return (
     <div className='app'>
